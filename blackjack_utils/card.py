@@ -75,6 +75,17 @@ class Card:
         :return: the suit of the card as a string
         """
         return self.suits[self.suit]
+    
+    def get_card_value(self):
+        """
+        :return: the value of the card (2-9, 10 for 10, J, Q, K, 11 for A)
+        """
+        if self.rank < 9:
+            return self.rank + 2
+        elif self.rank == 12:
+            return 11
+        else:
+            return 10
 
     def __gt__(self, other):
         return self.rank > other.rank

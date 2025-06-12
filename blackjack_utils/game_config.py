@@ -65,6 +65,10 @@ class GameConfig:
             return True
         if dealer_hand_score > 17:
             return False
+        if self.is_soft_17(hand):
+            return self.dealer_hit_soft_17
+        return False
+        
         
     def is_soft_17(self, hand: List[Card]):
         hand_value = sum(card.get_card_value() for card in hand)

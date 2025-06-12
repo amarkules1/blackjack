@@ -1,6 +1,6 @@
 from typing import List
-from card import Card
-from shoe import Shoe
+from blackjack_utils.card import Card
+from blackjack_utils.shoe import Shoe
 
 class GameConfig:
     decks_in_shoe = 6

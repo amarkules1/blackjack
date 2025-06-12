@@ -1,4 +1,4 @@
-from texas_hold_em_utils.card import Card
+from blackjack_utils.card import Card
 
 import random
 

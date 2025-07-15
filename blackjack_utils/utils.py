@@ -3,6 +3,7 @@ import pandas as pd
 import blackjack_utils.game_config as gc
 import blackjack_utils.shoe as shoe
 import blackjack_utils.card as card
+import blackjack_utils.deck as deck
 
 def simulate_hand(game_config: gc.GameConfig, player_starting_cards: List[card.Card], dealer_card_up:card.Card, deck: shoe.Shoe, ev_actions: pd.DataFrame):
     """
@@ -36,3 +37,36 @@ def simulate_hand(game_config: gc.GameConfig, player_starting_cards: List[card.C
     if can_keep_hitting:
         return simulate_hand(game_config, player_cards, dealer_card_up, deck, ev_actions)
     return outcome_multiplier * game_config.evaluate(player_cards, [dealer_card_up, deck.draw()], deck)
+
+def build_combos():
+    combos = {}
+    for i in range(2, 22):
+        combos[str(i)] = []
+    for i in range(12, 21):
+        combos[f"soft_{i}"] = []
+    for i in range(2, 21, 2):
+        combos[f'paired_{i}'] = []
+    deck_1 = deck.Deck()
+    deck_2 = deck.Deck()
+    for card_1 in deck_1.cards:
+        for card_2 in deck_2.cards:
+            total = card_1.get_card_value() + card_2.get_card_value()
+            if total == 22:
+                total = 12
+            if card_1.get_card_value() == card_2.get_card_value():
+                combos[f'paired_{total}'].append((card_1, card_2))
+            if (card_1.get_card_value() == 11 or card_2.get_card_value() == 11) and total < 21:
+                combos[f'soft_{total}'].append((card_1, card_2))
+            else:
+                combos[str(total)].append((card_1, card_2))
+                
+    return combos
+
+
+def determine_best_action(row: pd.Series) -> pd.DataFrame:
+    if row['double'] > row['hit'] and row['double'] > row['stand']:
+        return 'double'
+    elif row['hit'] > row['stand']:
+        return 'hit'
+    else:
+        return 'stand'

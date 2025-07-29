@@ -5,18 +5,32 @@ import blackjack_utils.shoe as shoe
 import blackjack_utils.card as card
 import blackjack_utils.deck as deck
 
+
+def is_soft_count(player_cards):
+    aces = sum(1 for card in player_cards if card.rank == 12)
+    total = sum(card.get_card_value() for card in player_cards)
+    while total > 21 and aces > 0:
+        total -= 10
+        aces -= 1
+    return total > 10 and aces > 0
+
 def simulate_hand(game_config: gc.GameConfig, player_starting_cards: List[card.Card], dealer_card_up:card.Card, deck: shoe.Shoe, ev_actions: pd.DataFrame):
     """
         uses an EV action table like above to make a decision, then play through the hand
     """
     player_total = game_config.score_hand(player_starting_cards)
-    # is_paired = player_starting_cards[0].get_card_value() == player_starting_cards[1].get_card_value()
-    # is_soft = player_starting_cards[0].get_card_value() == 11 or player_starting_cards[1].get_card_value() == 11
+    is_paired = player_starting_cards[0].get_card_value() == player_starting_cards[1].get_card_value() and len(player_starting_cards) == 2
+    is_soft = is_soft_count(player_starting_cards)
+    player_hand_str = f"{player_total}"
+    if is_paired:
+        player_hand_str = f"paired_{player_total}"
+    if is_soft:
+        player_hand_str = f"soft_{player_total}"
     if player_total > 20:
         action = 'stand'
     else:
         try:
-            action = ev_actions[(ev_actions['player_total'] == str(player_total)) & (ev_actions['dealer_card_up'] == str(dealer_card_up.get_card_value()))]['best_action'].iloc[0]
+            action = ev_actions[(ev_actions['player_total'] == player_hand_str) & (ev_actions['dealer_card_up'] == str(dealer_card_up.get_card_value()))]['best_action'].iloc[0]
         except IndexError:
             action = 'stand'
             print(f"player_total: {player_total}, dealer_card_up: {dealer_card_up.get_card_value()}, ev_actions: {ev_actions}")
@@ -46,6 +60,7 @@ def build_combos():
         combos[f"soft_{i}"] = []
     for i in range(2, 21, 2):
         combos[f'paired_{i}'] = []
+    combos['paired_aces'] = []
     deck_1 = deck.Deck()
     deck_2 = deck.Deck()
     for card_1 in deck_1.cards:
@@ -53,9 +68,10 @@ def build_combos():
             total = card_1.get_card_value() + card_2.get_card_value()
             if total == 22:
                 total = 12
-            if card_1.get_card_value() == card_2.get_card_value():
+                combos['paired_aces'].append((card_1, card_2)) 
+            elif card_1.get_card_value() == card_2.get_card_value():
                 combos[f'paired_{total}'].append((card_1, card_2))
-            if (card_1.get_card_value() == 11 or card_2.get_card_value() == 11) and total < 21:
+            elif (card_1.get_card_value() == 11 or card_2.get_card_value() == 11) and total < 21:
                 combos[f'soft_{total}'].append((card_1, card_2))
             else:
                 combos[str(total)].append((card_1, card_2))

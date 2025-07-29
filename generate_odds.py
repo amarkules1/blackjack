@@ -13,7 +13,7 @@ import time
 print("Starting odds generation...")
 start_time = time.time()
 num_threads = 14
-iterations_per_thread = 25_000 // num_threads
+iterations_per_thread = 2_000 // num_threads
 
 data = pd.DataFrame(columns=['player_total', 'action', 'dealer_card_up', 'expected_value'])
 player_cards = [card.Card().from_ints(11, 0), card.Card().from_ints(10, 0)]
@@ -163,22 +163,26 @@ player_totals_start_time = time.time()
 
 combos = build_combos()
 # now do it for 19-12
-for player_amt in ['19', '18', '17', '16', '15', '14', '13', '12', '11', '10', '9', '8', '7', '6', '5']:
+for player_amt in ['19', '18', '17', '16', '15', '14', '13', '12', '11', '10',
+                   'soft_20', 'soft_19', 'soft_18', 'soft_17', 'soft_16', 'soft_15', 'soft_14', 'soft_13', 
+                   '9', '8', '7', '6', '5',
+                   'paired_18', 'paired_16', 'paired_14', 'paired_12', 'paired_10', 'paired_8', 'paired_6', 'paired_4', 'paired_aces']:
     print(f"Processing player total {player_amt}...")
     player_total_start = time.time()
     
     data_stand = data.copy()
-    data_stand['best_action'] = 'stand'
     data_stand['player_total'] = player_amt
     data_stand.drop_duplicates(subset=['player_total', 'dealer_card_up'], inplace=True)
+    data_stand['best_action'] = 'stand'
     data_double = data_stand.copy()
     data_double['best_action'] = 'double'
-    data_double = pd.concat([data_double, data_double], ignore_index=True)
-    data_double['best_action'] = 'double'
     data_hit = data_double.copy()
-    data_double = pd.concat([data_double, data], ignore_index=True)
     data_hit['best_action'] = 'hit'
-    data_hit = pd.concat([data_hit, data], ignore_index=True)
+    
+    data_stand = pd.concat([data, data_stand], ignore_index=True)
+    data_double = pd.concat([data, data_double], ignore_index=True)
+    data_hit = pd.concat([data, data_hit], ignore_index=True)
+    
     combos_for_total = combos[player_amt]
     game_config = gc.GameConfig(6, True, True, True, 1.5)
     

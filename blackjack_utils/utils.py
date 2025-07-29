@@ -22,10 +22,13 @@ def simulate_hand(game_config: gc.GameConfig, player_starting_cards: List[card.C
     is_paired = player_starting_cards[0].get_card_value() == player_starting_cards[1].get_card_value() and len(player_starting_cards) == 2
     is_soft = is_soft_count(player_starting_cards)
     player_hand_str = f"{player_total}"
-    if is_paired:
+    if is_paired and is_soft:
+        player_hand_str = "paired_aces"
+    elif is_paired:
         player_hand_str = f"paired_{player_total}"
-    if is_soft:
+    elif is_soft:
         player_hand_str = f"soft_{player_total}"
+        
     if player_total > 20:
         action = 'stand'
     else:

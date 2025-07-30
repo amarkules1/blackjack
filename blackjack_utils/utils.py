@@ -48,6 +48,14 @@ def simulate_hand(game_config: gc.GameConfig, player_starting_cards: List[card.C
         player_cards.append(deck.draw())
     elif action == 'stand':
         can_keep_hitting = False
+    elif action == 'split':
+        player_cards_a = [player_cards[0]]
+        player_cards_b = [player_cards[1]]
+        player_cards_a.append(deck.draw())
+        player_cards_b.append(deck.draw())
+        outcome_a = simulate_hand(game_config, player_cards_a, dealer_card_up, deck, ev_actions)
+        outcome_b = simulate_hand(game_config, player_cards_b, dealer_card_up, deck, ev_actions)
+        return outcome_a + outcome_b
     player_total = game_config.score_hand(player_cards)
     if player_total > 20:
         can_keep_hitting = False
@@ -83,6 +91,8 @@ def build_combos():
 
 
 def determine_best_action(row: pd.Series) -> pd.DataFrame:
+    if 'split' in row.index and row['split'] > row['hit'] and row['split'] > row['stand'] and row['split'] > row['double']:
+        return 'split'
     if row['double'] > row['hit'] and row['double'] > row['stand']:
         return 'double'
     elif row['hit'] > row['stand']:

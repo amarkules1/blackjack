@@ -14,7 +14,7 @@ def is_soft_count(player_cards):
         aces -= 1
     return total > 10 and aces > 0
 
-def simulate_hand(game_config: gc.GameConfig, player_starting_cards: List[card.Card], dealer_card_up:card.Card, deck: shoe.Shoe, ev_actions: pd.DataFrame):
+def simulate_hand(game_config: gc.GameConfig, player_starting_cards: List[card.Card], dealer_card_up:card.Card, deck: shoe.Shoe, ev_actions: pd.DataFrame, ignore_dealer_blackjack=False):
     """
         uses an EV action table like above to make a decision, then play through the hand
     """
@@ -53,15 +53,15 @@ def simulate_hand(game_config: gc.GameConfig, player_starting_cards: List[card.C
         player_cards_b = [player_cards[1]]
         player_cards_a.append(deck.draw())
         player_cards_b.append(deck.draw())
-        outcome_a = simulate_hand(game_config, player_cards_a, dealer_card_up, deck, ev_actions)
-        outcome_b = simulate_hand(game_config, player_cards_b, dealer_card_up, deck, ev_actions)
+        outcome_a = simulate_hand(game_config, player_cards_a, dealer_card_up, deck, ev_actions, ignore_dealer_blackjack)
+        outcome_b = simulate_hand(game_config, player_cards_b, dealer_card_up, deck, ev_actions, ignore_dealer_blackjack)
         return outcome_a + outcome_b
     player_total = game_config.score_hand(player_cards)
     if player_total > 20:
         can_keep_hitting = False
     if can_keep_hitting:
-        return simulate_hand(game_config, player_cards, dealer_card_up, deck, ev_actions)
-    return outcome_multiplier * game_config.evaluate(player_cards, [dealer_card_up, deck.draw()], deck)
+        return simulate_hand(game_config, player_cards, dealer_card_up, deck, ev_actions, ignore_dealer_blackjack)
+    return outcome_multiplier * game_config.evaluate(player_cards, [dealer_card_up, deck.draw()], deck, ignore_dealer_blackjack)
 
 def build_combos():
     combos = {}

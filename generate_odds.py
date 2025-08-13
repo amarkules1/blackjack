@@ -54,9 +54,9 @@ def simulate_player_total_worker(args):
         deck.remove(player_cards[0])
         deck.remove(player_cards[1])
         deck.remove(dealer_card_up)
-        local_hit_total += simulate_hand(game_config, player_cards, dealer_card_up, deck, data_hit)
-        local_double_total += simulate_hand(game_config, player_cards, dealer_card_up, deck, data_double)
-        local_stand_total += simulate_hand(game_config, player_cards, dealer_card_up, deck, data_stand)
+        local_hit_total += simulate_hand(game_config, player_cards, dealer_card_up, deck, data_hit, ignore_dealer_blackjack=True)
+        local_double_total += simulate_hand(game_config, player_cards, dealer_card_up, deck, data_double, ignore_dealer_blackjack=True)
+        local_stand_total += simulate_hand(game_config, player_cards, dealer_card_up, deck, data_stand, ignore_dealer_blackjack=True)
     
     return (local_hit_total, local_double_total, local_stand_total)
 

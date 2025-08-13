@@ -17,7 +17,7 @@ class GameConfig:
         self.surrender_allowed = surrender_allowed
         self.blackjack_pays = blackjack_pays
     
-    def evaluate(self, player_final_hand: List[Card], dealer_hand: List[Card], remaining_shoe: Shoe):
+    def evaluate(self, player_final_hand: List[Card], dealer_hand: List[Card], remaining_shoe: Shoe, ignore_dealer_blackjack=False):
         """
         :param player_final_hand (List[Card]): the final hand of the player
         :param dealer_hand (List[Card]): the 2 cards of the dealer (before dealer play)
@@ -33,6 +33,11 @@ class GameConfig:
             if self.hand_is_blackjack(dealer_hand):
                 return 0
             return self.blackjack_pays
+        
+        if self.hand_is_blackjack(dealer_hand):
+            if ignore_dealer_blackjack:
+                return 0
+            return -1
         
         # score hands
         player_score = self.score_hand(player_final_hand)

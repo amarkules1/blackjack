@@ -44,7 +44,7 @@ def simulate_hand(game_config: gc.GameConfig, player_starting_cards: List[card.C
         player_cards.append(deck.draw())
     elif action == 'double':
         outcome_multiplier = 2
-        can_keep_hitting = False
+        can_keep_hitting = game_config.double_after_split
         player_cards.append(deck.draw())
     elif action == 'stand':
         can_keep_hitting = False
@@ -56,6 +56,8 @@ def simulate_hand(game_config: gc.GameConfig, player_starting_cards: List[card.C
         outcome_a = simulate_hand(game_config, player_cards_a, dealer_card_up, deck, ev_actions, ignore_dealer_blackjack)
         outcome_b = simulate_hand(game_config, player_cards_b, dealer_card_up, deck, ev_actions, ignore_dealer_blackjack)
         return outcome_a + outcome_b
+    elif action == 'surrender':
+        return -0.5
     player_total = game_config.score_hand(player_cards)
     if player_total > 20:
         can_keep_hitting = False

@@ -11,11 +11,54 @@ import time
 
 NUM_THREADS = 12
 ITERATIONS_PER_THREAD = 400_000 // NUM_THREADS
-OUTPUT_FILE_NAME = '6-5_stand_soft_17_odds.csv'
-DEALER_HIT_SOFT_17 = False
-DOUBLE_AFTER_SPLIT = False
+
+OUTPUT_FILE_NAME = 'double_after_splitting_hit_soft_17_odds.csv' # not done
+DEALER_HIT_SOFT_17 = True
+DOUBLE_AFTER_SPLIT = True
 SURRENDER_ALLOWED = True
-BLACKJACK_PAYS = 6/5
+BLACKJACK_PAYS = 1.5
+
+# OUTPUT_FILE_NAME = '6-5_double_after_splitting_hit_soft_17_odds.csv' -- not done
+# DEALER_HIT_SOFT_17 = True
+# DOUBLE_AFTER_SPLIT = True
+# SURRENDER_ALLOWED = True
+# BLACKJACK_PAYS = 6/5
+
+# OUTPUT_FILE_NAME = 'standard_hit_soft_17_odds.csv' -- DONE
+# DEALER_HIT_SOFT_17 = True
+# DOUBLE_AFTER_SPLIT = False
+# SURRENDER_ALLOWED = True
+# BLACKJACK_PAYS = 1.5
+
+# OUTPUT_FILE_NAME = '6-5_hit_soft_17_odds.csv' -- DONE
+# DEALER_HIT_SOFT_17 = True
+# DOUBLE_AFTER_SPLIT = False
+# SURRENDER_ALLOWED = True
+# BLACKJACK_PAYS = 6/5
+
+# OUTPUT_FILE_NAME = 'double_after_splitting_odds.csv' -- DONE
+# DEALER_HIT_SOFT_17 = False
+# DOUBLE_AFTER_SPLIT = True
+# SURRENDER_ALLOWED = True
+# BLACKJACK_PAYS = 1.5
+
+# OUTPUT_FILE_NAME = '6-5_double_after_split_odds.csv' -- not done
+# DEALER_HIT_SOFT_17 = False
+# DOUBLE_AFTER_SPLIT = True
+# SURRENDER_ALLOWED = True
+# BLACKJACK_PAYS = 6/5
+
+# OUTPUT_FILE_NAME = 'standard_hit_soft_17_odds.csv' -- DONE
+# DEALER_HIT_SOFT_17 = True
+# DOUBLE_AFTER_SPLIT = False
+# SURRENDER_ALLOWED = True
+# BLACKJACK_PAYS = 1.5
+
+# OUTPUT_FILE_NAME = '6-5_hit_soft_17_odds.csv' -- DONE
+# DEALER_HIT_SOFT_17 = True
+# DOUBLE_AFTER_SPLIT = False
+# SURRENDER_ALLOWED = True
+# BLACKJACK_PAYS = 6/5
 DECKS_IN_SHOE = 6
 
 def simulate_stand_worker(args):

@@ -12,13 +12,13 @@ import time
 NUM_THREADS = 12
 ITERATIONS_PER_THREAD = 400_000 // NUM_THREADS
 
-OUTPUT_FILE_NAME = 'double_after_splitting_hit_soft_17_odds.csv' # not done
-DEALER_HIT_SOFT_17 = True
-DOUBLE_AFTER_SPLIT = True
-SURRENDER_ALLOWED = True
-BLACKJACK_PAYS = 1.5
+# OUTPUT_FILE_NAME = 'double_after_splitting_hit_soft_17_odds.csv' # DONE
+# DEALER_HIT_SOFT_17 = True
+# DOUBLE_AFTER_SPLIT = True
+# SURRENDER_ALLOWED = True
+# BLACKJACK_PAYS = 1.5
 
-# OUTPUT_FILE_NAME = '6-5_double_after_splitting_hit_soft_17_odds.csv' -- not done
+# OUTPUT_FILE_NAME = '6-5_double_after_splitting_hit_soft_17_odds.csv' # DONE
 # DEALER_HIT_SOFT_17 = True
 # DOUBLE_AFTER_SPLIT = True
 # SURRENDER_ALLOWED = True
@@ -42,11 +42,11 @@ BLACKJACK_PAYS = 1.5
 # SURRENDER_ALLOWED = True
 # BLACKJACK_PAYS = 1.5
 
-# OUTPUT_FILE_NAME = '6-5_double_after_split_odds.csv' -- not done
-# DEALER_HIT_SOFT_17 = False
-# DOUBLE_AFTER_SPLIT = True
-# SURRENDER_ALLOWED = True
-# BLACKJACK_PAYS = 6/5
+OUTPUT_FILE_NAME = '6-5_double_after_split_odds.csv' # not done
+DEALER_HIT_SOFT_17 = False
+DOUBLE_AFTER_SPLIT = True
+SURRENDER_ALLOWED = True
+BLACKJACK_PAYS = 6/5
 
 # OUTPUT_FILE_NAME = 'standard_hit_soft_17_odds.csv' -- DONE
 # DEALER_HIT_SOFT_17 = True

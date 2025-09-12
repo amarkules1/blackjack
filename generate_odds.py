@@ -42,7 +42,7 @@ ITERATIONS_PER_THREAD = 400_000 // NUM_THREADS
 # SURRENDER_ALLOWED = True
 # BLACKJACK_PAYS = 1.5
 
-OUTPUT_FILE_NAME = '6-5_double_after_split_odds.csv' # not done
+OUTPUT_FILE_NAME = '6-5_double_after_split_odds.csv' # DONE
 DEALER_HIT_SOFT_17 = False
 DOUBLE_AFTER_SPLIT = True
 SURRENDER_ALLOWED = True

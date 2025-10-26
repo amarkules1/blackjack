@@ -44,7 +44,7 @@ def simulate_hand(game_config: gc.GameConfig, player_starting_cards: List[card.C
         player_cards.append(deck.draw())
     elif action == 'double':
         outcome_multiplier = 2
-        can_keep_hitting = game_config.double_after_split
+        can_keep_hitting = False
         player_cards.append(deck.draw())
     elif action == 'stand':
         can_keep_hitting = False

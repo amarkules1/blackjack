@@ -82,7 +82,7 @@ def build_combos():
             if total == 22:
                 total = 12
                 combos['paired_aces'].append((card_1, card_2)) 
-            elif card_1.get_card_value() == card_2.get_card_value():
+            elif card_1.rank == card_2.rank:
                 combos[f'paired_{total}'].append((card_1, card_2))
             elif (card_1.get_card_value() == 11 or card_2.get_card_value() == 11) and total < 21:
                 combos[f'soft_{total}'].append((card_1, card_2))

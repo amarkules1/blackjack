@@ -10,13 +10,13 @@ import multiprocessing
 import time
 
 NUM_THREADS = 12
-ITERATIONS_PER_THREAD = 400_000 // NUM_THREADS
+ITERATIONS_PER_THREAD = 4_000 // NUM_THREADS
 
-# OUTPUT_FILE_NAME = 'double_after_splitting_hit_soft_17_odds.csv' # DONE
-# DEALER_HIT_SOFT_17 = True
-# DOUBLE_AFTER_SPLIT = True
-# SURRENDER_ALLOWED = True
-# BLACKJACK_PAYS = 1.5
+OUTPUT_FILE_NAME = 'double_after_splitting_hit_soft_17_odds.csv' # DONE
+DEALER_HIT_SOFT_17 = True
+DOUBLE_AFTER_SPLIT = True
+SURRENDER_ALLOWED = True
+BLACKJACK_PAYS = 1.5
 
 # OUTPUT_FILE_NAME = '6-5_double_after_splitting_hit_soft_17_odds.csv' # DONE
 # DEALER_HIT_SOFT_17 = True
@@ -42,11 +42,11 @@ ITERATIONS_PER_THREAD = 400_000 // NUM_THREADS
 # SURRENDER_ALLOWED = True
 # BLACKJACK_PAYS = 1.5
 
-OUTPUT_FILE_NAME = '6-5_double_after_split_odds.csv' # DONE
-DEALER_HIT_SOFT_17 = False
-DOUBLE_AFTER_SPLIT = True
-SURRENDER_ALLOWED = True
-BLACKJACK_PAYS = 6/5
+# OUTPUT_FILE_NAME = '6-5_double_after_split_odds.csv' # DONE
+# DEALER_HIT_SOFT_17 = False
+# DOUBLE_AFTER_SPLIT = True
+# SURRENDER_ALLOWED = True
+# BLACKJACK_PAYS = 6/5
 
 # OUTPUT_FILE_NAME = 'standard_hit_soft_17_odds.csv' -- DONE
 # DEALER_HIT_SOFT_17 = True
@@ -265,8 +265,7 @@ def main():
     data = data[~data['player_total'].str.startswith('paired')]
 
     combos = build_combos()
-    # now do it for 19-12
-    for player_amt in ['paired_18', 'paired_16', 'paired_14', 'paired_12', 'paired_10', 'paired_8', 'paired_6', 'paired_4', 'paired_aces']:
+    for player_amt in ['paired_20', 'paired_18', 'paired_16', 'paired_14', 'paired_12', 'paired_10', 'paired_8', 'paired_6', 'paired_4', 'paired_aces']:
         print(f"Processing player total {player_amt}...")
         player_total_start = time.time()
         

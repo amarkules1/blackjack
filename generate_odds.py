@@ -10,7 +10,7 @@ import multiprocessing
 import time
 
 NUM_THREADS = 12
-ITERATIONS_PER_THREAD = 4_000 // NUM_THREADS
+ITERATIONS_PER_THREAD = 400_000 // NUM_THREADS
 
 OUTPUT_FILE_NAME = 'double_after_splitting_hit_soft_17_odds.csv' # DONE
 DEALER_HIT_SOFT_17 = True

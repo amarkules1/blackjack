@@ -8,6 +8,7 @@ from blackjack_utils.utils import simulate_hand, build_combos, determine_best_ac
 import threading
 import multiprocessing
 import time
+import argparse
 
 NUM_THREADS = 12
 ITERATIONS_PER_THREAD = 400_000 // NUM_THREADS
@@ -136,15 +137,36 @@ def simulate_player_total_worker_splitable(args):
     return (local_hit_total, local_double_total, local_stand_total, local_split_total)
 
 def main():
+    parser = argparse.ArgumentParser(description='Generate blackjack odds using Monte Carlo simulation')
+    parser.add_argument('--num_threads', type=int, default=NUM_THREADS, help=f'Number of threads to use (default: {NUM_THREADS})')
+    parser.add_argument('--iterations', type=int, default=400_000, help='Total number of iterations (default: 400000)')
+    parser.add_argument('--output_file_name', type=str, default=OUTPUT_FILE_NAME, help=f'Output CSV file name (default: {OUTPUT_FILE_NAME})')
+    parser.add_argument('--dealer_hit_soft_17', type=lambda x: x.lower() == 'true', default=DEALER_HIT_SOFT_17, help=f'Dealer hits on soft 17 (default: {DEALER_HIT_SOFT_17})')
+    parser.add_argument('--double_after_split', type=lambda x: x.lower() == 'true', default=DOUBLE_AFTER_SPLIT, help=f'Allow double after split (default: {DOUBLE_AFTER_SPLIT})')
+    parser.add_argument('--surrender_allowed', type=lambda x: x.lower() == 'true', default=SURRENDER_ALLOWED, help=f'Allow surrender (default: {SURRENDER_ALLOWED})')
+    parser.add_argument('--blackjack_pays', type=float, default=BLACKJACK_PAYS, help=f'Blackjack payout multiplier (default: {BLACKJACK_PAYS})')
+    
+    args = parser.parse_args()
+    
     print("Starting odds generation...")
+    print(f"Configuration:")
+    print(f"  Threads: {args.num_threads}")
+    print(f"  Iterations: {args.iterations}")
+    print(f"  Output file: {args.output_file_name}")
+    print(f"  Dealer hits soft 17: {args.dealer_hit_soft_17}")
+    print(f"  Double after split: {args.double_after_split}")
+    print(f"  Surrender allowed: {args.surrender_allowed}")
+    print(f"  Blackjack pays: {args.blackjack_pays}")
+    print()
+    
     start_time = time.time()
-    num_threads = NUM_THREADS
-    iterations_per_thread = ITERATIONS_PER_THREAD
+    num_threads = args.num_threads
+    iterations_per_thread = args.iterations // num_threads
 
     data = pd.DataFrame(columns=['player_total', 'action', 'dealer_card_up', 'expected_value'])
     player_cards = [card.Card().from_ints(11, 0), card.Card().from_ints(10, 0)]
 
-    game_config = gc.GameConfig(DECKS_IN_SHOE, DEALER_HIT_SOFT_17, DOUBLE_AFTER_SPLIT, SURRENDER_ALLOWED, BLACKJACK_PAYS)
+    game_config = gc.GameConfig(DECKS_IN_SHOE, args.dealer_hit_soft_17, args.double_after_split, args.surrender_allowed, args.blackjack_pays)
 
     # stand 
     print("\nStarting STAND simulations...")
@@ -286,7 +308,7 @@ def main():
         data_split = pd.concat([data, data_split], ignore_index=True)
         
         combos_for_total = combos[player_amt]
-        game_config = gc.GameConfig(6, True, True, True, 1.5)
+        game_config = gc.GameConfig(6, args.dealer_hit_soft_17, args.double_after_split, args.surrender_allowed, args.blackjack_pays)
         
         for dealer_card_rank in list(range(9)) + [12]:
             pool_args = [(iterations_per_thread, dealer_card_rank, combos_for_total, game_config, data_hit, data_double, data_stand, data_split) for _ in range(num_threads)]
@@ -312,7 +334,7 @@ def main():
         player_total_end = time.time()
         print(f"Player total {player_amt} completed in {player_total_end - player_total_start:.2f} seconds")
             
-    data.to_csv(OUTPUT_FILE_NAME, index=False)
+    data.to_csv(args.output_file_name, index=False)
 
     player_totals_end_time = time.time()
     print(f"\nPLAYER TOTALS simulations completed in {player_totals_end_time - player_totals_start_time:.2f} seconds\n")
@@ -324,7 +346,7 @@ def main():
     print(f"Hit/Double simulations: {hit_end_time - hit_start_time:.2f} seconds")
     print(f"Player totals simulations: {player_totals_end_time - player_totals_start_time:.2f} seconds")
     print(f"Total execution time: {total_time:.2f} seconds")
-    print(f"Results saved to odds.csv")
+    print(f"Results saved to {args.output_file_name}")
 
 if __name__ == '__main__':
     main()

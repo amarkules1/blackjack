@@ -5,8 +5,8 @@ from blackjack_utils.shoe import Shoe
 class GameConfig:
     decks_in_shoe = 6
     dealer_hit_soft_17 = True
-    double_after_split = True
-    surrender_allowed = True
+    double_after_split = True # doesn't do anything at this point
+    surrender_allowed = True # doesn't do anything at this point
     blackjack_pays = 1.5
     #probably more to add later
     

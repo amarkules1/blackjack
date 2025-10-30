@@ -145,6 +145,7 @@ def main():
     parser.add_argument('--double_after_split', type=lambda x: x.lower() == 'true', default=DOUBLE_AFTER_SPLIT, help=f'Allow double after split (default: {DOUBLE_AFTER_SPLIT})')
     parser.add_argument('--surrender_allowed', type=lambda x: x.lower() == 'true', default=SURRENDER_ALLOWED, help=f'Allow surrender (default: {SURRENDER_ALLOWED})')
     parser.add_argument('--blackjack_pays', type=float, default=BLACKJACK_PAYS, help=f'Blackjack payout multiplier (default: {BLACKJACK_PAYS})')
+    parser.add_argument('--start_at', type=int, default=None, help=f'player hand to start at')
     
     args = parser.parse_args()
     
@@ -162,8 +163,11 @@ def main():
     start_time = time.time()
     num_threads = args.num_threads
     iterations_per_thread = args.iterations // num_threads
-
-    data = pd.DataFrame(columns=['player_total', 'action', 'dealer_card_up', 'expected_value'])
+    
+    if args.start_at is not None:
+        data = pd.read_csv(args.output_file_name)
+    else:
+        data = pd.DataFrame(columns=['player_total', 'action', 'dealer_card_up', 'expected_value'])
     player_cards = [card.Card().from_ints(11, 0), card.Card().from_ints(10, 0)]
 
     game_config = gc.GameConfig(DECKS_IN_SHOE, args.dealer_hit_soft_17, args.double_after_split, args.surrender_allowed, args.blackjack_pays)
@@ -171,77 +175,83 @@ def main():
     # stand 
     print("\nStarting STAND simulations...")
     stand_start_time = time.time()
-    for i in list(range(9)) + [12]:
-        dealer_card_up = card.Card().from_ints(i, 0)
-        deck = shoe.Shoe(6)
-        deck.remove(player_cards[0])
-        deck.remove(player_cards[1])
-        deck.remove(dealer_card_up)
-        
-        pool_args = [(iterations_per_thread, dealer_card_up, deck, player_cards, game_config) for _ in range(num_threads)]
+    if args.start_at is not None:
+        for i in list(range(9)) + [12]:
+            dealer_card_up = card.Card().from_ints(i, 0)
+            deck = shoe.Shoe(6)
+            deck.remove(player_cards[0])
+            deck.remove(player_cards[1])
+            deck.remove(dealer_card_up)
+            
+            pool_args = [(iterations_per_thread, dealer_card_up, deck, player_cards, game_config) for _ in range(num_threads)]
 
-        with multiprocessing.Pool(processes=num_threads) as pool:
-            results = pool.map(simulate_stand_worker, pool_args)
+            with multiprocessing.Pool(processes=num_threads) as pool:
+                results = pool.map(simulate_stand_worker, pool_args)
 
-        all_results = []
-        for res in results:
-            all_results.extend(res)
-        
-        mean = sum(all_results) / len(all_results)
-        data = pd.concat([data, pd.DataFrame({'player_total': [game_config.score_hand(player_cards)], 'action': ['stand'], 'dealer_card_up': [dealer_card_up.get_card_value()], 'expected_value': [mean]})], ignore_index=True)
-        print(f"Completed stand simulation for dealer card {dealer_card_up.get_card_value()}")
+            all_results = []
+            for res in results:
+                all_results.extend(res)
+            
+            mean = sum(all_results) / len(all_results)
+            data = pd.concat([data, pd.DataFrame({'player_total': [game_config.score_hand(player_cards)], 'action': ['stand'], 'dealer_card_up': [dealer_card_up.get_card_value()], 'expected_value': [mean]})], ignore_index=True)
+            print(f"Completed stand simulation for dealer card {dealer_card_up.get_card_value()}")
 
-    stand_end_time = time.time()
-    print(f"STAND simulations completed in {stand_end_time - stand_start_time:.2f} seconds\n")
+        stand_end_time = time.time()
+        print(f"STAND simulations completed in {stand_end_time - stand_start_time:.2f} seconds\n")
 
-    # hit/double 
-    print("Starting HIT/DOUBLE simulations...")
-    hit_start_time = time.time()
-    for i in list(range(9)) + [12]:
-        dealer_card_up = card.Card().from_ints(i, 0)
-        deck = shoe.Shoe(6)
-        deck.remove(player_cards[0])
-        deck.remove(player_cards[1])
-        deck.remove(dealer_card_up)
-        
-        pool_args = [(iterations_per_thread, dealer_card_up, deck, player_cards, game_config) for _ in range(num_threads)]
+        # hit/double 
+        print("Starting HIT/DOUBLE simulations...")
+        hit_start_time = time.time()
+        for i in list(range(9)) + [12]:
+            dealer_card_up = card.Card().from_ints(i, 0)
+            deck = shoe.Shoe(6)
+            deck.remove(player_cards[0])
+            deck.remove(player_cards[1])
+            deck.remove(dealer_card_up)
+            
+            pool_args = [(iterations_per_thread, dealer_card_up, deck, player_cards, game_config) for _ in range(num_threads)]
 
-        with multiprocessing.Pool(processes=num_threads) as pool:
-            results = pool.map(simulate_hit_worker, pool_args)
+            with multiprocessing.Pool(processes=num_threads) as pool:
+                results = pool.map(simulate_hit_worker, pool_args)
 
-        all_results = []
-        all_results_double = []
-        for res_hit, res_double in results:
-            all_results.extend(res_hit)
-            all_results_double.extend(res_double)
-        
-        mean = sum(all_results) / len(all_results)
-        mean_double = sum(all_results_double) / len(all_results_double)
-        data = pd.concat([data, pd.DataFrame({'player_total': [game_config.score_hand(player_cards)], 'action': ['hit'], 'dealer_card_up': [dealer_card_up.get_card_value()], 'expected_value': [mean]})], ignore_index=True)
-        data = pd.concat([data, pd.DataFrame({'player_total': [game_config.score_hand(player_cards)], 'action': ['double'], 'dealer_card_up': [dealer_card_up.get_card_value()], 'expected_value': [mean_double]})], ignore_index=True)
-        print(f"Completed hit/double simulation for dealer card {dealer_card_up.get_card_value()}")
+            all_results = []
+            all_results_double = []
+            for res_hit, res_double in results:
+                all_results.extend(res_hit)
+                all_results_double.extend(res_double)
+            
+            mean = sum(all_results) / len(all_results)
+            mean_double = sum(all_results_double) / len(all_results_double)
+            data = pd.concat([data, pd.DataFrame({'player_total': [game_config.score_hand(player_cards)], 'action': ['hit'], 'dealer_card_up': [dealer_card_up.get_card_value()], 'expected_value': [mean]})], ignore_index=True)
+            data = pd.concat([data, pd.DataFrame({'player_total': [game_config.score_hand(player_cards)], 'action': ['double'], 'dealer_card_up': [dealer_card_up.get_card_value()], 'expected_value': [mean_double]})], ignore_index=True)
+            print(f"Completed hit/double simulation for dealer card {dealer_card_up.get_card_value()}")
 
-    hit_end_time = time.time()
-    print(f"HIT/DOUBLE simulations completed in {hit_end_time - hit_start_time:.2f} seconds\n")
+        hit_end_time = time.time()
+        print(f"HIT/DOUBLE simulations completed in {hit_end_time - hit_start_time:.2f} seconds\n")
 
-    print("Processing results...")
-    data.sort_values(by=['player_total', 'dealer_card_up', 'action'])
-    data = data.pivot_table(index=['player_total', 'dealer_card_up'], columns='action', values='expected_value')
-    data['player_total'] = data.index.get_level_values(0)
-    data['dealer_card_up'] = data.index.get_level_values(1)
-    data.reset_index(drop=True, inplace=True)
-    data['best_action'] = data.apply(determine_best_action, axis=1)
-    data['player_total'] = data['player_total'].astype(str)
-    data['dealer_card_up'] = data['dealer_card_up'].astype(str)
+        print("Processing results...")
+        data.sort_values(by=['player_total', 'dealer_card_up', 'action'])
+        data = data.pivot_table(index=['player_total', 'dealer_card_up'], columns='action', values='expected_value')
+        data['player_total'] = data.index.get_level_values(0)
+        data['dealer_card_up'] = data.index.get_level_values(1)
+        data.reset_index(drop=True, inplace=True)
+        data['best_action'] = data.apply(determine_best_action, axis=1)
+        data['player_total'] = data['player_total'].astype(str)
+        data['dealer_card_up'] = data['dealer_card_up'].astype(str)
 
-    print("\nStarting PLAYER TOTALS simulations...")
-    player_totals_start_time = time.time()
+        print("\nStarting PLAYER TOTALS simulations...")
+        player_totals_start_time = time.time()
 
     combos = build_combos()
-    # now do it for 19-12
-    for player_amt in ['19', '18', '17', '16', '15', '14', '13', '12', '11', '10',
+    player_amts = ['19', '18', '17', '16', '15', '14', '13', '12', '11', '10',
                     'soft_20', 'soft_19', 'soft_18', 'soft_17', 'soft_16', 'soft_15', 'soft_14', 'soft_13', 
-                    '9', '8', '7', '6', '5']:
+                    '9', '8', '7', '6', '5']
+    if args.start_at is not None and args.start_at in player_amts:
+        player_amts = player_amts[player_amts.index(args.start_at):]
+    elif args.start_at is not None:
+        player_amts = []
+    # now do it for 19-12
+    for player_amt in player_amts:
         print(f"Processing player total {player_amt}...")
         player_total_start = time.time()
         
@@ -288,7 +298,12 @@ def main():
     data = data[~data['player_total'].str.startswith('paired')]
 
     combos = build_combos()
-    for player_amt in ['paired_20', 'paired_18', 'paired_16', 'paired_14', 'paired_12', 'paired_10', 'paired_8', 'paired_6', 'paired_4', 'paired_aces']:
+    player_amts = ['paired_20', 'paired_18', 'paired_16', 'paired_14', 'paired_12', 'paired_10', 'paired_8', 'paired_6', 'paired_4', 'paired_aces']
+    if args.start_at is not None and args.start_at in player_amts:
+        player_amts = player_amts[player_amts.index(args.start_at):]
+    elif args.start_at is not None:
+        player_amts = []
+    for player_amt in player_amts:
         print(f"Processing player total {player_amt}...")
         player_total_start = time.time()
         

@@ -280,6 +280,7 @@ def main():
             print(f"  Completed dealer card {card.Card().from_ints(dealer_card_rank, 0).get_card_value()}")
         
         player_total_end = time.time()
+        data.to_csv(args.output_file_name, index=False)
         print(f"Player total {player_amt} completed in {player_total_end - player_total_start:.2f} seconds")
         
     data['player_total'] = data['player_total'].astype(str)
@@ -332,6 +333,7 @@ def main():
             print(f"  Completed dealer card {card.Card().from_ints(dealer_card_rank, 0).get_card_value()}")
         
         player_total_end = time.time()
+        data.to_csv(args.output_file_name, index=False)
         print(f"Player total {player_amt} completed in {player_total_end - player_total_start:.2f} seconds")
             
     data.to_csv(args.output_file_name, index=False)

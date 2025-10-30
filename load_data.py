@@ -49,9 +49,9 @@ def main():
         conn = psycopg2.connect(db_conn_string)
         print("Database connection successful.")
 
-        create_table(conn)
+        # create_table(conn)
 
-        data_dir = 'data'
+        data_dir = 'data2'
         csv_files = [f for f in os.listdir(data_dir) if f.endswith('.csv')]
 
         with conn.cursor() as cur:
@@ -92,7 +92,13 @@ def main():
                 INSERT INTO blackjack_odds (player_total, dealer_card_up, double_ev, hit_ev, stand_ev, split_ev, 
                                           best_action, dealer_hit_soft_17, double_after_split, blackjack_pays, surrender_allowed)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                ON CONFLICT (player_total, dealer_card_up, dealer_hit_soft_17, double_after_split, blackjack_pays, surrender_allowed) DO NOTHING;
+                ON CONFLICT (player_total, dealer_card_up, dealer_hit_soft_17, double_after_split, blackjack_pays, surrender_allowed) 
+                DO UPDATE SET 
+                double_ev = EXCLUDED.double_ev,
+                hit_ev = EXCLUDED.hit_ev,
+                stand_ev = EXCLUDED.stand_ev,
+                split_ev = EXCLUDED.split_ev,
+                best_action = EXCLUDED.best_action;
                 """
                 
                 # Insert data row by row

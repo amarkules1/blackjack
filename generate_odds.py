@@ -175,7 +175,7 @@ def main():
     # stand 
     print("\nStarting STAND simulations...")
     stand_start_time = time.time()
-    if args.start_at is not None:
+    if args.start_at is None:
         for i in list(range(9)) + [12]:
             dealer_card_up = card.Card().from_ints(i, 0)
             deck = shoe.Shoe(6)

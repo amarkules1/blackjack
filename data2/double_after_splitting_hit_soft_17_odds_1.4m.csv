@@ -339,3 +339,16 @@ double,hit,stand,player_total,dealer_card_up,best_action,split
 -0.45522285714285715,-0.0009442857142857142,-0.54246,paired_aces,9,split,1.1660585714285714
 -0.4756742857142857,-0.06430285714285715,-0.4976607142857143,paired_aces,10,split,0.9435996428571428
 -0.4091542857142857,-0.04547428571428572,-0.4136221428571429,paired_aces,11,split,0.7317242857142857
+
+
+1.4m discrepancies:
+- paired 3s against a 2 - mine says hit instead of split (off by 0.0065)
+- paired 4s against a 5 - mine says hit instead of split (off by 0.0005)
+- 9 against a 3 - mine says hit instead of double (off by 0.0013)
+- soft 13 against a 6 - mine says hit instead of double (off by 0.0082)
+- soft 13 against a 5 - mine says hit instead of double (off by 0.029)
+- soft 14 against a 5 - mine says hit instead of double (off by 0.0062)
+- soft 15 against a 4 - mine says hit instead of double (off by 0.0114)
+
+700k didn't have the paired 4s discrepancy, but it did have one where it throught you should stand with a 16 against a 10 (very small margin)
+paired 4s against a 5 is probably judt due to sampling, rest seem to be genuine. Guess I'll have to test it out.

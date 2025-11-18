@@ -1,7 +1,7 @@
-pipenv run ./generate_odds.py --num_threads 14 --iterations 700000 --output_file_name "data2\6-5_double_after_split_odds.csv" --dealer_hit_soft_17 False --double_after_split True --blackjack_pays 1.2
-pipenv run ./generate_odds.py --num_threads 14 --iterations 700000 --output_file_name "data2\6-5_double_after_splitting_hit_soft_17_odds.csv" --dealer_hit_soft_17 True --double_after_split True --blackjack_pays 1.2
-pipenv run ./generate_odds.py --num_threads 14 --iterations 700000 --output_file_name "data2\6-5_hit_soft_17_odds.csv" --dealer_hit_soft_17 True --double_after_split False --blackjack_pays 1.2
-pipenv run ./generate_odds.py --num_threads 14 --iterations 700000 --output_file_name "data2\6-5_stand_soft_17_odds.csv" --dealer_hit_soft_17 False --double_after_split False --blackjack_pays 1.2
-pipenv run ./generate_odds.py --num_threads 14 --iterations 700000 --output_file_name "data2\double_after_splitting_odds.csv" --dealer_hit_soft_17 False --double_after_split True --blackjack_pays 1.5
-pipenv run ./generate_odds.py --num_threads 14 --iterations 700000 --output_file_name "data2\stand_soft_17_odds.csv" --dealer_hit_soft_17 False --double_after_split False --blackjack_pays 1.5
-pipenv run ./generate_odds.py --num_threads 14 --iterations 700000 --output_file_name "data2\standard_hit_soft_17_odds.csv" --dealer_hit_soft_17 True --double_after_split False --blackjack_pays 1.5
+python generate_odds.py --num_threads 14 --iterations 700000 --output_file_name "data2\6-5_double_after_split_odds.csv" --dealer_hit_soft_17 False --double_after_split True --blackjack_pays 1.2 --start_at "soft_14"
+python generate_odds.py --num_threads 14 --iterations 700000 --output_file_name "data2\6-5_double_after_splitting_hit_soft_17_odds.csv" --dealer_hit_soft_17 True --double_after_split True --blackjack_pays 1.2
+python generate_odds.py --num_threads 14 --iterations 700000 --output_file_name "data2\6-5_hit_soft_17_odds.csv" --dealer_hit_soft_17 True --double_after_split False --blackjack_pays 1.2
+python generate_odds.py --num_threads 14 --iterations 700000 --output_file_name "data2\6-5_stand_soft_17_odds.csv" --dealer_hit_soft_17 False --double_after_split False --blackjack_pays 1.2
+python generate_odds.py --num_threads 14 --iterations 700000 --output_file_name "data2\double_after_splitting_odds.csv" --dealer_hit_soft_17 False --double_after_split True --blackjack_pays 1.5
+python generate_odds.py --num_threads 14 --iterations 700000 --output_file_name "data2\stand_soft_17_odds.csv" --dealer_hit_soft_17 False --double_after_split False --blackjack_pays 1.5
+python generate_odds.py --num_threads 14 --iterations 700000 --output_file_name "data2\standard_hit_soft_17_odds.csv" --dealer_hit_soft_17 True --double_after_split False --blackjack_pays 1.5

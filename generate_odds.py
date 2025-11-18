@@ -167,7 +167,7 @@ def main():
     if args.start_at is not None:
         data = pd.read_csv(args.output_file_name)
     else:
-        data = pd.DataFrame(columns=['player_total', 'action', 'dealer_card_up', 'expected_value'])
+        data = pd.DataFrame()
     player_cards = [card.Card().from_ints(11, 0), card.Card().from_ints(10, 0)]
 
     game_config = gc.GameConfig(DECKS_IN_SHOE, args.dealer_hit_soft_17, args.double_after_split, args.surrender_allowed, args.blackjack_pays)

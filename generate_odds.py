@@ -145,7 +145,7 @@ def main():
     parser.add_argument('--double_after_split', type=lambda x: x.lower() == 'true', default=DOUBLE_AFTER_SPLIT, help=f'Allow double after split (default: {DOUBLE_AFTER_SPLIT})')
     parser.add_argument('--surrender_allowed', type=lambda x: x.lower() == 'true', default=SURRENDER_ALLOWED, help=f'Allow surrender (default: {SURRENDER_ALLOWED})')
     parser.add_argument('--blackjack_pays', type=float, default=BLACKJACK_PAYS, help=f'Blackjack payout multiplier (default: {BLACKJACK_PAYS})')
-    parser.add_argument('--start_at', type=int, default=None, help=f'player hand to start at')
+    parser.add_argument('--start_at', type=str, default=None, help=f'player hand to start at')
     
     args = parser.parse_args()
     
